@@ -15,40 +15,38 @@ type ListProps = {
   list: TechBooks;
 };
 type ItemProps = {
-  item: TechBook;
+  title: String;
+  url: string;
+  author: string;
+  num_comments: number;
+  points: number;
 };
 
-const List: React.FC<ListProps> = (props) => {
-  console.log("List rendered.");
-  return (
-    <ul>
-      {props.list.map((book) => (
-        <Item key={book.id} item={book} />
-      ))}
-    </ul>
-  );
-};
+const List: React.FC<ListProps> = ({ list }) => (
+  <ul>
+    {list.map((item) => (
+      <Item key={item.id} {...item} />
+    ))}
+  </ul>
+);
 
 type SearchProps = {
   search: string;
   onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Search: React.FC<SearchProps> = (props) => {
-  console.log("Search rendered.");
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input
-        className="text-input"
-        id="search"
-        type="text"
-        value={props.search}
-        onChange={props.onSearch}
-      />
-    </div>
-  );
-};
+const Search: React.FC<SearchProps> = ({ search, onSearch }) => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input
+      className="text-input"
+      id="search"
+      type="text"
+      value={search}
+      onChange={onSearch}
+    />
+  </div>
+);
 
 const App = () => {
   const books = [
@@ -69,10 +67,8 @@ const App = () => {
       id: 1,
     },
   ];
+
   const [searchTerm, setSearchTerm] = React.useState("react");
-
-  console.log("App rendered.");
-
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -94,18 +90,21 @@ const App = () => {
   );
 };
 
-const Item: React.FC<ItemProps> = (props) => {
-  console.log("Item rendered.");
-  return (
-    <li>
-      <span>
-        <a href={props.item.url}>{props.item.title}</a>
-      </span>
-      <span>{props.item.author}</span>
-      <span>{props.item.num_comments}</span>
-      <span>{props.item.points}</span>
-    </li>
-  );
-};
+const Item: React.FC<ItemProps> = ({
+  title,
+  url,
+  author,
+  num_comments,
+  points,
+}) => (
+  <li>
+    <span>
+      <a href={url}>{title}</a>
+    </span>
+    <span>{author}</span>
+    <span>{num_comments}</span>
+    <span>{points}</span>
+  </li>
+);
 
 export default App;
