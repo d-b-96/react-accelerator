@@ -1,4 +1,5 @@
 import * as react from "react";
+import React from "react";
 
 type TechBook = {
   id: number;
@@ -18,6 +19,10 @@ type ItemProps = {
   item: TechBook;
 };
 
+type SearchProps = {
+  onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
 const List: React.FC<ListProps> = (props) => (
   <ul>
     {props.list.map((book) => (
@@ -26,11 +31,13 @@ const List: React.FC<ListProps> = (props) => (
   </ul>
 );
 
-const Search = () => {
+const Search: React.FC<SearchProps> = (props) => {
+  const [searchTerm, setSearchTerm] = React.useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
-    console.log(e.target.value);
+    setSearchTerm(e.target.value);
+    props.onSearch(e);
   };
+
   return (
     <div>
       <label htmlFor="search">Search: </label>
@@ -40,6 +47,9 @@ const Search = () => {
         type="text"
         onChange={handleChange}
       />
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
     </div>
   );
 };
@@ -64,15 +74,22 @@ const App = () => {
     },
   ];
 
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const searchedBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h1>Hacker Stories</h1>
-
-      <Search />
-
+      <Search onSearch={handleSearch} />
       <hr />
-
-      <List list={books} />
+      <List list={searchedBooks} />
     </div>
   );
 };
@@ -87,5 +104,6 @@ const Item: React.FC<ItemProps> = (props) => (
     <span>{props.item.points}</span>
   </li>
 );
+
 
 export default App;
